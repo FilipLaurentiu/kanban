@@ -5,7 +5,7 @@ use diesel::pg::{Pg, PgValue};
 use diesel::serialize::{IsNull, Output, ToSql};
 use crate::schema::*;
 
-#[derive(serde::Serialize, diesel::Queryable)]
+#[derive(serde::Serialize, Queryable)]
 #[serde(rename_all = "camelCase")]
 pub struct Board {
     pub id: i64,
@@ -23,7 +23,7 @@ pub struct Card {
     pub created_at: chrono::DateTime<chrono::Utc>,
 }
 
-#[derive(serde::Serialize, serde::Deserialize, Debug, FromSqlRow)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, FromSqlRow, AsExpression)]
 #[serde(rename_all = "camelCase")]
 #[diesel(sql_type = sql_types::StatusEnum)]
 pub enum Status {
@@ -93,8 +93,9 @@ pub struct CreateBoard {
     pub name: String,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Insertable)]
 #[serde(rename_all = "camelCase")]
+#[table_name = "cards"]
 pub struct CreateCard {
     pub board_id: i64,
     pub description: String,
